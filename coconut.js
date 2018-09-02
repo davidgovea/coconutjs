@@ -8,7 +8,7 @@ var USER_AGENT = 'Coconut/2.2.0 (NodeJS)';
 
 module.exports = {
 
-  submit: function(configContent, apiKey, callback) {
+  submit(configContent, apiKey, callback) {
     var coconutURL = url.parse(process.env.HEYWATCH_URL || 'https://api.coconut.co');
 
     if(!apiKey) {
@@ -20,32 +20,32 @@ module.exports = {
       port: coconutURL.port || (coconutURL.protocol == 'https:' ? 443 : 80),
       path: '/v1/job',
       method: 'POST',
-      auth: apiKey+':',
+      auth: `${apiKey}:`,
       headers: {
         'User-Agent': USER_AGENT,
         'Content-Type': 'text/plain',
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Length': configContent.length
       }
     };
 
     function handleError(e) {
-      console.log('problem with request: ' + e.message);
+      console.log(`problem with request: ${e.message}`);
       if(callback) {
         callback(null);
       }
     }
 
-    var req = (coconutURL.protocol == 'https:' ? https : http).request(reqOptions, function(res) {
+    var req = (coconutURL.protocol == 'https:' ? https : http).request(reqOptions, (res) => {
       res.setEncoding('utf8');
       var responseString = '';
 
-      res.on('data', function(data) {
+      res.on('data', (data) => {
         responseString += data;
       });
 
-      res.on('end', function () {
-        try {
+      res.on('end', () => {
+        try{
           var resultObject = JSON.parse(responseString);
           if(callback) {
             callback(resultObject);
@@ -62,49 +62,49 @@ module.exports = {
     req.end();
   },
 
-  config: function(options) {
+  config(options) {
     var conf_file = options.conf;
     var conf;
     if(conf_file) {
-      conf = fs.readFileSync(conf_file, 'utf8').split("\n");
-    } else {
+      conf = fs.readFileSync(conf_file, 'utf8').split('\n');
+    } else{
       conf = [];
     }
 
     var vars = options.vars;
     if(vars) {
       for(var v in vars) {
-        conf.push('var ' + v + ' = ' + String(vars[v]));
+        conf.push(`var ${v} = ${String(vars[v])}`);
       }
     }
 
     var source = options.source;
     if(source) {
-      conf.push('set source = ' + source);
+      conf.push(`set source = ${source}`);
     }
 
     var webhook = options.webhook;
     if(webhook) {
-      conf.push('set webhook = ' + webhook);
+      conf.push(`set webhook = ${webhook}`);
     }
 
     var outputs = options.outputs;
     if(outputs) {
       for(var format in outputs) {
-        conf.push('-> ' + format + ' = ' + String(outputs[format]));
+        conf.push(`-> ${format} = ${String(outputs[format])}`);
       }
     }
 
     var new_conf = [];
-    new_conf = new_conf.concat(conf.filter(function(l) { return l.indexOf('var') === 0 } ).sort());
+    new_conf = new_conf.concat(conf.filter(l => l.indexOf('var') === 0).sort());
     new_conf.push('');
-    new_conf = new_conf.concat(conf.filter(function(l) { return l.indexOf('set') === 0 } ).sort());
+    new_conf = new_conf.concat(conf.filter(l => l.indexOf('set') === 0).sort());
     new_conf.push('');
-    new_conf = new_conf.concat(conf.filter(function(l) { return l.indexOf('->') === 0 } ).sort());
+    new_conf = new_conf.concat(conf.filter(l => l.indexOf('->') === 0).sort());
 
     return new_conf.join('\n');
   },
-  createJob: function(options, callback) {
+  createJob(options, callback) {
     this.submit(this.config(options), options.api_key, callback);
   }
-}
+};
