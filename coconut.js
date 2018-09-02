@@ -29,6 +29,13 @@ module.exports = {
       }
     };
 
+    function handleError(e) {
+      console.log('problem with request: ' + e.message);
+      if(callback) {
+        callback(null);
+      }
+    }
+
     var req = (coconutURL.protocol == 'https:' ? https : http).request(reqOptions, function(res) {
       res.setEncoding('utf8');
       var responseString = '';
@@ -45,12 +52,7 @@ module.exports = {
       });
     });
 
-    req.on('error', function(e) {
-      console.log('problem with request: ' + e.message);
-      if(callback) {
-        callback(null);
-      }
-    });
+    req.on('error', handleError);
 
     req.write(configContent);
     req.end();
