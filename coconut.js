@@ -70,24 +70,27 @@ module.exports = {
       conf = [];
     }
 
-    var vars = options.vars;
+    var {
+      vars,
+      source,
+      webhook,
+      outputs,
+    } = options;
+
     if(vars) {
       for(var v in vars) {
         conf.push(`var ${v} = ${String(vars[v])}`);
       }
     }
 
-    var source = options.source;
     if(source) {
       conf.push(`set source = ${source}`);
     }
 
-    var webhook = options.webhook;
     if(webhook) {
       conf.push(`set webhook = ${webhook}`);
     }
 
-    var outputs = options.outputs;
     if(outputs) {
       for(var format in outputs) {
         conf.push(`-> ${format} = ${String(outputs[format])}`);
