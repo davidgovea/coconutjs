@@ -9,7 +9,7 @@ var USER_AGENT = 'Coconut/2.2.0 (NodeJS)';
 module.exports = {
 
   submit: function(configContent, apiKey, callback) {
-    coconutURL = url.parse(process.env.HEYWATCH_URL || 'https://api.coconut.co');
+    var coconutURL = url.parse(process.env.HEYWATCH_URL || 'https://api.coconut.co');
 
     if(!apiKey) {
       apiKey = process.env.COCONUT_API_KEY;
@@ -63,38 +63,39 @@ module.exports = {
   },
 
   config: function(options) {
-    conf_file = options.conf;
+    var conf_file = options.conf;
+    var conf;
     if(conf_file) {
       conf = fs.readFileSync(conf_file, 'utf8').split("\n");
     } else {
       conf = [];
     }
 
-    vars = options.vars;
+    var vars = options.vars;
     if(vars) {
-      for(v in vars) {
+      for(var v in vars) {
         conf.push('var ' + v + ' = ' + String(vars[v]));
       }
     }
 
-    source = options.source;
+    var source = options.source;
     if(source) {
       conf.push('set source = ' + source);
     }
 
-    webhook = options.webhook;
+    var webhook = options.webhook;
     if(webhook) {
       conf.push('set webhook = ' + webhook);
     }
 
-    outputs = options.outputs;
+    var outputs = options.outputs;
     if(outputs) {
-      for(format in outputs) {
+      for(var format in outputs) {
         conf.push('-> ' + format + ' = ' + String(outputs[format]));
       }
     }
 
-    new_conf = [];
+    var new_conf = [];
     new_conf = new_conf.concat(conf.filter(function(l) { return l.indexOf('var') === 0 } ).sort());
     new_conf.push('');
     new_conf = new_conf.concat(conf.filter(function(l) { return l.indexOf('set') === 0 } ).sort());
