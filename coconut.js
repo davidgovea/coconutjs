@@ -17,7 +17,7 @@ module.exports = {
 
     var reqOptions = {
       hostname: coconutURL.hostname,
-      port: coconutURL.port || (coconutURL.protocol == 'https:' ? 443 : 80),
+      port: coconutURL.port || (coconutURL.protocol === 'https:' ? 443 : 80),
       path: '/v1/job',
       method: 'POST',
       auth: `${apiKey}:`,
@@ -36,7 +36,7 @@ module.exports = {
       }
     }
 
-    var req = (coconutURL.protocol == 'https:' ? https : http).request(reqOptions, (res) => {
+    var req = (coconutURL.protocol === 'https:' ? https : http).request(reqOptions, (res) => {
       res.setEncoding('utf8');
       var responseString = '';
 
