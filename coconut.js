@@ -45,9 +45,13 @@ module.exports = {
       });
 
       res.on('end', function () {
-        var resultObject = JSON.parse(responseString);
-        if(callback) {
-          callback(resultObject);
+        try {
+          var resultObject = JSON.parse(responseString);
+          if(callback) {
+            callback(resultObject);
+          }
+        } catch(e) {
+          handleError(e);
         }
       });
     });
