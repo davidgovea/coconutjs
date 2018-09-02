@@ -78,9 +78,9 @@ module.exports = {
     } = options;
 
     if(vars) {
-      for(var v in vars) {
-        conf.push(`var ${v} = ${String(vars[v])}`);
-      }
+      Object.entries(outputs).forEach(([v, value]) => {
+        conf.push(`var ${v} = ${String(value)}`);
+      });
     }
 
     if(source) {
@@ -92,9 +92,9 @@ module.exports = {
     }
 
     if(outputs) {
-      for(var format in outputs) {
-        conf.push(`-> ${format} = ${String(outputs[format])}`);
-      }
+      Object.entries(outputs).forEach(([format, value]) => {
+        conf.push(`-> ${format} = ${String(value)}`);
+      });
     }
 
     var new_conf = [];
